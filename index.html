@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Stress Monitor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    // Basic client-side validation and helper
+    function validateAndSubmit(e) {
+      const selects = document.querySelectorAll('select[name^="q"]');
+      for (const s of selects) {
+        if (!s.value) {
+          alert("Please answer all questions before submitting.");
+          s.focus();
+          e.preventDefault();
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function resetForm() {
+      const form = document.getElementById('stress-form');
+      form.reset();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="header">
+        <h1>Student Stress Question</h1>
+        <p>Please answer all questions (1 = Never … 5 = Always). Gender & Age use scaled options.</p>
+      </div>
+
+      <form id="stress-form" method="POST" action="/predict" onsubmit="return validateAndSubmit(event)">
+        {% for i in range(1, 26) %}
+          <div class="question">
+            <label>Q{{ i }}: {{ questions[i-1] }}</label>
+
+            {# Special options for Gender (Q1) and Age (Q2). Others use 1..5. #}
+            {% if i == 1 %}
+              <select name="q1" required>
+                <option value="1">Male</option>
+                <option value="2">Female</option>
+                <option value="3">Other</option>
+              </select>
+            {% elif i == 2 %}
+              <select name="q2" required>
+                <option value="1">Below 18</option>
+                <option value="2">18–22</option>
+                <option value="3">23–26</option>
+                <option value="4">27–30</option>
+                <option value="5">Above 30</option>
+              </select>
+            {% elif i == 23 %}
+              <!-- Do you attend classes regularly? (you might want reverse scale) -->
+              <select name="q23" required>
+                <option value="1">Never</option>
+                <option value="2">Rarely</option>
+                <option value="3">Sometimes</option>
+                <option value="4">Often</option>
+                <option value="5">Always</option>
+              </select>
+            {% else %}
+              <select name="q{{ i }}" required>
+                <option value="1">1 - Never</option>
+                <option value="2">2 - Rarely</option>
+                <option value="3">3 - Sometimes</option>
+                <option value="4">4 - Often</option>
+                <option value="5">5 - Always</option>
+              </select>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        <div class="actions">
+          <button type="submit">Predict Stress Type</button>
+          <button type="button" class="secondary" onclick="resetForm()">Clear</button>
+        </div>
+      </form>
+
+      <div class="footer">© 2025 Student Stress Monitor By Yash Kumar</div>
+    </div>
+  </div>
+</body>
+</html>

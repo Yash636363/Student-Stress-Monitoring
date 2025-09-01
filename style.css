@@ -1,0 +1,231 @@
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --accent: #10b981;
+  --danger: #ef4444;
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --radius: 16px;
+  --gap: 24px;
+  --transition: 0.3s ease;
+}
+
+/* Reset and base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 100%);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Wrapper to center content with max-width */
+.wrapper {
+  max-width: 980px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+/* Responsive typography for header */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.header h1 {
+  margin-bottom: 0.25rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+.header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Card container - supports grid layout */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 32px;
+  transition: box-shadow var(--transition);
+  max-width: 100%;
+  margin-bottom: var(--gap);
+}
+.card:hover,
+.card:focus-within {
+  box-shadow: var(--shadow-hover);
+  outline: none;
+}
+
+/* Question Container */
+.question {
+  margin: 1rem 0;
+  padding: 18px 20px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fafafa;
+  transition: transform 0.15s ease, border-color var(--transition);
+  cursor: default;
+}
+.question:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+}
+
+/* Form labels */
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+/* Select dropdown */
+select {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: white;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline-offset: 2px;
+}
+select:focus,
+select:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.35);
+}
+
+/* Actions container - center buttons with spacing */
+.actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  background: var(--primary);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  transition: transform 0.15s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  flex-shrink: 0;
+}
+button:hover,
+button:focus-visible {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(29, 78, 216, 0.35);
+  outline: none;
+}
+button:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+button.secondary {
+  background: var(--accent);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+button.secondary:hover,
+button.secondary:focus-visible {
+  background: #0eab70;
+  box-shadow: 0 6px 16px rgba(14, 171, 112, 0.4);
+}
+button.danger {
+  background: var(--danger);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+}
+button.danger:hover,
+button.danger:focus-visible {
+  background: #dc2626;
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+}
+
+/* Footer text */
+.footer {
+  margin-top: 36px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.875rem;
+  user-select: none;
+}
+
+/* Responsive adjustments */
+
+/* Medium devices (tablets) */
+@media (min-width: 600px) {
+  .wrapper {
+    padding: 0 24px;
+  }
+  .card {
+    padding: 32px 36px;
+  }
+  select {
+    max-width: 240px;
+  }
+}
+
+/* Larger screens - build grid layout for cards and questions */
+@media (min-width: 768px) {
+  .wrapper {
+    margin: 60px auto;
+    max-width: 1024px;
+  }
+
+  /* Example: If cards appear in multiple instances, use grid */
+  .card-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--gap);
+  }
+
+  .card {
+    margin-bottom: 0;
+  }
+
+  /* Increase button size */
+  button {
+    padding: 16px 36px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Extra large desktop screens */
+@media (min-width: 1200px) {
+  .wrapper {
+    max-width: 1140px;
+  }
+}

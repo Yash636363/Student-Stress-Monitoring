@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stress Prediction Result</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .result-badge {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: #e0e7ff;
+      color: #1e3a8a;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+    .box {
+      margin-top: 18px;
+      padding: 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+    }
+    .actions { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card" style="text-align:center">
+      <h1>Your Stress Type</h1>
+      <div class="result-badge">{{ result }}</div>
+
+      <div class="box">
+        <p><strong>Tips:</strong> This prediction is based on your questionnaire. If your stress feels unmanageable or affects daily life, consider talking to a counselor or a trusted professional.</p>
+      </div>
+
+      <div class="actions">
+        <a href="{{ url_for('home') }}"><button>Take Question Again</button></a>
+      </div>
+
+      <div class="footer">© 2025 Student Stress Monitor By Yash Kumar</div>
+    </div>
+  </div>
+</body>
+</html>
