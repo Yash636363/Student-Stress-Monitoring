@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Stress Assessment Result</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .result-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .result-badge {
+      display: inline-block;
+      padding: 15px 25px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.2em;
+      margin: 20px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    /* Dynamic colors based on stress level */
+    .stress-low { 
+      background: linear-gradient(135deg, #d4f6cc, #a7e6a0);
+      color: #2d5a3d; 
+      border: 2px solid #4ade80;
+    }
+    .stress-moderate { 
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      color: #92400e; 
+      border: 2px solid #f59e0b;
+    }
+    .stress-high { 
+      background: linear-gradient(135deg, #fee2e2, #fca5a5);
+      color: #991b1b; 
+      border: 2px solid #ef4444;
+    }
+    .stress-severe { 
+      background: linear-gradient(135deg, #e5e7eb, #9ca3af);
+      color: #374151; 
+      border: 2px solid #6b7280;
+    }
+    
+    .info-box {
+      margin: 25px 0;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: left;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .description-box {
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      border-left: 4px solid #0ea5e9;
+    }
+    
+    .tips-box {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border-left: 4px solid #22c55e;
+    }
+    
+    .warning-box {
+      background: linear-gradient(135deg, #fefce8, #fef3c7);
+      border-left: 4px solid #eab308;
+    }
+    
+    .emergency-box {
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      border-left: 4px solid #ef4444;
+    }
+    
+    .actions {
+      margin: 30px 0;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #6b7280, #4b5563);
+      color: white;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .disclaimer {
+      margin-top: 30px;
+      padding: 15px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.9em;
+      color: #64748b;
+    }
+  </style>
+  
+  <script>
+    // Determine stress level and apply appropriate styling
+    function categorizeStress(result) {
+      const resultLower = result.toLowerCase();
+      
+      if (resultLower.includes('low') || resultLower.includes('minimal') || resultLower.includes('no stress')) {
+        return 'stress-low';
+      } else if (resultLower.includes('moderate') || resultLower.includes('medium') || resultLower.includes('manageable')) {
+        return 'stress-moderate';  
+      } else if (resultLower.includes('high') || resultLower.includes('significant') || resultLower.includes('elevated')) {
+        return 'stress-high';
+      } else if (resultLower.includes('severe') || resultLower.includes('extreme') || resultLower.includes('critical')) {
+        return 'stress-severe';
+      }
+      
+      return 'stress-moderate'; // default
+    }
+    
+    function getStressInfo(result) {
+      const resultLower = result.toLowerCase();
+      
+      if (resultLower.includes('low') || resultLower.includes('minimal')) {
+        return {
+          icon: '😌',
+          description: 'Your stress levels appear to be well-managed. You seem to have good coping mechanisms in place.',
+          tips: [
+            'Continue maintaining your current healthy habits',
+            'Keep up regular exercise and good sleep patterns',
+            'Practice mindfulness or meditation occasionally',
+            'Stay connected with supportive friends and family'
+          ],
+          boxType: 'tips-box'
+        };
+      } else if (resultLower.includes('moderate') || resultLower.includes('medium')) {
+        return {
+          icon: '😐',
+          description: 'You are experiencing moderate stress levels. This is manageable with some adjustments to your routine.',
+          tips: [
+            'Try stress management techniques like deep breathing',
+            'Ensure you get 7-8 hours of quality sleep',
+            'Take regular breaks during study/work sessions',
+            'Consider talking to friends, family, or a counselor',
+            'Engage in physical activity or hobbies you enjoy'
+          ],
+          boxType: 'warning-box'
+        };
+      } else if (resultLower.includes('high') || resultLower.includes('significant')) {
+        return {
+          icon: '😰',
+          description: 'Your stress levels are elevated and may be impacting your daily life and academic performance.',
+          tips: [
+            'Consider speaking with a counselor or mental health professional',
+            'Practice daily stress reduction techniques',
+            'Prioritize sleep, nutrition, and regular exercise',
+            'Break large tasks into smaller, manageable steps',
+            'Reach out to your support network',
+            'Consider reducing non-essential commitments temporarily'
+          ],
+          boxType: 'warning-box'
+        };
+      } else {
+        return {
+          icon: '🚨',
+          description: 'Your stress levels appear to be very high. It\'s important to seek support and take immediate action.',
+          tips: [
+            'Strongly consider speaking with a mental health professional immediately',
+            'Contact your student counseling center or healthcare provider',
+            'Reach out to trusted friends, family members, or mentors',
+            'Practice immediate stress relief: deep breathing, short walks',
+            'Consider temporary adjustments to academic or work load',
+            'Emergency resources: National Suicide Prevention Lifeline: 988'
+          ],
+          boxType: 'emergency-box'
+        };
+      }
+    }
+    
+    // Apply styling when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      const resultElement = document.getElementById('stress-result');
+      const result = resultElement.textContent;
+      
+      // Apply appropriate CSS class
+      const stressClass = categorizeStress(result);
+      resultElement.className = `result-badge ${stressClass}`;
+      
+      // Add appropriate icon
+      const stressInfo = getStressInfo(result);
+      resultElement.innerHTML = `${stressInfo.icon} ${result}`;
+      
+      // Update description and tips
+      document.getElementById('description-text').textContent = stressInfo.description;
+      document.getElementById('tips-box').className = `info-box ${stressInfo.boxType}`;
+      
+      const tipsList = document.getElementById('tips-list');
+      tipsList.innerHTML = '';
+      stressInfo.tips.forEach(tip => {
+        const li = document.createElement('li');
+        li.textContent = tip;
+        tipsList.appendChild(li);
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="result-container">
+        <h1>🧠 Your Stress Assessment Result</h1>
+        
+        <div id="stress-result" class="result-badge">{{ result }}</div>
+        
+        <div class="info-box description-box">
+          <h3>📊 What This Means</h3>
+          <p id="description-text">Based on your responses, here's what your stress level indicates...</p>
+        </div>
+        
+        <div id="tips-box" class="info-box tips-box">
+          <h3>💡 Recommended Actions</h3>
+          <ul id="tips-list" style="margin: 10px 0; padding-left: 20px;">
+            <!-- Tips will be populated by JavaScript -->
+          </ul>
+        </div>
+        
+        <div class="actions">
+          <a href="{{ url_for('home') }}" class="btn btn-primary">
+            🔄 Take Assessment Again
+          </a>
+          <button onclick="window.print()" class="btn btn-secondary">
+            🖨️ Save Results
+          </button>
+        </div>
+        
+        <div class="disclaimer">
+          <h4>⚠️ Important Disclaimer</h4>
+          <p>
+            This assessment is for educational purposes only and is not a substitute for professional medical advice, 
+            diagnosis, or treatment. If you're experiencing severe stress or mental health concerns, please consult 
+            with a qualified healthcare provider or mental health professional.
+          </p>
+          <p>
+            <strong>Crisis Resources:</strong><br>
+            • National Suicide Prevention Lifeline: 988<br>
+            • Crisis Text Line: Text HOME to 741741<br>
+            • Your campus counseling center
+          </p>
+        </div>
+      </div>
+      
+      <div class="footer">
+        <p>© 2025 Student Stress Assessment Tool</p>
+        <p><small>Created by Yash Kumar | Confidential & Secure</small></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

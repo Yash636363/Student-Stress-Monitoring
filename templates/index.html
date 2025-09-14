@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Stress Assessment</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    // Enhanced client-side validation
+    function validateAndSubmit(e) {
+      const selects = document.querySelectorAll('select[name^="q"]');
+      let unanswered = [];
+      
+      // Check each question
+      for (let i = 0; i < selects.length; i++) {
+        const select = selects[i];
+        if (!select.value || select.value === "") {
+          unanswered.push(i + 1);
+        }
+      }
+      
+      // If there are unanswered questions
+      if (unanswered.length > 0) {
+        e.preventDefault();
+        const message = `Please answer all questions. Missing: Q${unanswered.join(', Q')}`;
+        alert(message);
+        
+        // Focus on first unanswered question
+        const firstUnanswered = document.querySelector(`select[name="q${unanswered[0]}"]`);
+        if (firstUnanswered) {
+          firstUnanswered.focus();
+          firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return false;
+      }
+      
+      // Show loading state
+      const submitBtn = document.querySelector('button[type="submit"]');
+      submitBtn.textContent = 'Analyzing...';
+      submitBtn.disabled = true;
+      
+      return true;
+    }
+    
+    function resetForm() {
+      const form = document.getElementById('stress-form');
+      if (confirm('Are you sure you want to clear all answers?')) {
+        form.reset();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+    
+    // Add progress tracking
+    function updateProgress() {
+      const selects = document.querySelectorAll('select[name^="q"]');
+      const answered = Array.from(selects).filter(s => s.value !== "").length;
+      const total = selects.length;
+      const percentage = Math.round((answered / total) * 100);
+      
+      const progressBar = document.getElementById('progress-fill');
+      const progressText = document.getElementById('progress-text');
+      
+      if (progressBar && progressText) {
+        progressBar.style.width = percentage + '%';
+        progressText.textContent = `${answered}/${total} questions answered`;
+      }
+    }
+    
+    // Add event listeners when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      const selects = document.querySelectorAll('select[name^="q"]');
+      selects.forEach(select => {
+        select.addEventListener('change', updateProgress);
+      });
+      updateProgress(); // Initial call
+    });
+  </script>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="header">
+        <h1>🧠 Student Stress Assessment</h1>
+        <p class="description">
+          Please answer all questions honestly. This assessment helps predict your stress level based on various factors.
+          <br><strong>Rating Scale:</strong> 1 = Never, 2 = Rarely, 3 = Sometimes, 4 = Often, 5 = Always
+        </p>
+        
+        <!-- Progress indicator -->
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+          <span id="progress-text" class="progress-text">0/25 questions answered</span>
+        </div>
+      </div>
+      
+      <form id="stress-form" method="POST" action="/predict" onsubmit="return validateAndSubmit(event)">
+        {% for i in range(1, 26) %}
+          <div class="question" data-question="{{ i }}">
+            <label for="q{{ i }}">
+              <span class="question-number">Q{{ i }}</span>
+              <span class="question-text">{{ questions[i-1] }}</span>
+            </label>
+            
+            {# Special handling for different question types #}
+            {% if i == 1 %}
+              {# Gender question #}
+              <select name="q1" id="q1" required aria-describedby="q1-help">
+                <option value="">-- Select Gender --</option>
+                <option value="1">Male</option>
+                <option value="2">Female</option>
+                <option value="3">Other</option>
+              </select>
+              <small id="q1-help" class="help-text">Choose your gender identity</small>
+              
+            {% elif i == 2 %}
+              {# Age question #}
+              <select name="q2" id="q2" required aria-describedby="q2-help">
+                <option value="">-- Select Age Range --</option>
+                <option value="1">Below 18</option>
+                <option value="2">18–22</option>
+                <option value="3">23–26</option>
+                <option value="4">27–30</option>
+                <option value="5">Above 30</option>
+              </select>
+              <small id="q2-help" class="help-text">Select your age range</small>
+              
+            {% else %}
+              {# Standard 1-5 scale questions #}
+              <select name="q{{ i }}" id="q{{ i }}" required aria-describedby="q{{ i }}-help">
+                <option value="">-- Select Answer --</option>
+                <option value="1">1 - Never</option>
+                <option value="2">2 - Rarely</option>
+                <option value="3">3 - Sometimes</option>
+                <option value="4">4 - Often</option>
+                <option value="5">5 - Always</option>
+              </select>
+              <small id="q{{ i }}-help" class="help-text">Rate how frequently this applies to you</small>
+            {% endif %}
+          </div>
+        {% endfor %}
+        
+        <div class="actions">
+          <button type="submit" class="submit-btn">
+            🔍 Analyze My Stress Level
+          </button>
+          <button type="button" class="secondary-btn" onclick="resetForm()">
+            🔄 Clear All Answers
+          </button>
+        </div>
+      </form>
+      
+      <div class="footer">
+        <p>© 2025 Student Stress Assessment Tool</p>
+        <p><small>Created by Yash Kumar | Confidential & Secure</small></p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Accessibility improvements -->
+  <div aria-live="polite" aria-atomic="true" class="sr-only" id="status-updates"></div>
+</body>
+</html>
