@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Stress Assessment</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Stress Professional Analysis Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Add favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    
+    <script>
     // Enhanced client-side validation
     function validateAndSubmit(e) {
       const selects = document.querySelectorAll('select[name^="q"]');
@@ -77,88 +81,114 @@
   </script>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="card">
-      <div class="header">
-        <h1>🧠 Student Stress Assessment</h1>
-        <p class="description">
-          Please answer all questions honestly. This assessment helps predict your stress level based on various factors.
-          <br><strong>Rating Scale:</strong> 1 = Never, 2 = Rarely, 3 = Sometimes, 4 = Often, 5 = Always
-        </p>
-        
-        <!-- Progress indicator -->
-        <div class="progress-container">
-          <div class="progress-bar">
-            <div id="progress-fill" class="progress-fill"></div>
-          </div>
-          <span id="progress-text" class="progress-text">0/25 questions answered</span>
+    <div class="top-banner">
+        <div class="banner-content">
+            <i class="fas fa-shield-alt"></i> Secure & Confidential Assessment
+            <span class="separator">|</span>
+            <i class="fas fa-chart-line"></i> Professional Analysis
+            <span class="separator">|</span>
+            <i class="fas fa-clock"></i> Takes ~5 minutes
         </div>
-      </div>
-      
-      <form id="stress-form" method="POST" action="/predict" onsubmit="return validateAndSubmit(event)">
-        {% for i in range(1, 26) %}
-          <div class="question" data-question="{{ i }}">
-            <label for="q{{ i }}">
-              <span class="question-number">Q{{ i }}</span>
-              <span class="question-text">{{ questions[i-1] }}</span>
-            </label>
-            
-            {# Special handling for different question types #}
-            {% if i == 1 %}
-              {# Gender question #}
-              <select name="q1" id="q1" required aria-describedby="q1-help">
-                <option value="">-- Select Gender --</option>
-                <option value="1">Male</option>
-                <option value="2">Female</option>
-                <option value="3">Other</option>
-              </select>
-              <small id="q1-help" class="help-text">Choose your gender identity</small>
-              
-            {% elif i == 2 %}
-              {# Age question #}
-              <select name="q2" id="q2" required aria-describedby="q2-help">
-                <option value="">-- Select Age Range --</option>
-                <option value="1">Below 18</option>
-                <option value="2">18–22</option>
-                <option value="3">23–26</option>
-                <option value="4">27–30</option>
-                <option value="5">Above 30</option>
-              </select>
-              <small id="q2-help" class="help-text">Select your age range</small>
-              
-            {% else %}
-              {# Standard 1-5 scale questions #}
-              <select name="q{{ i }}" id="q{{ i }}" required aria-describedby="q{{ i }}-help">
-                <option value="">-- Select Answer --</option>
-                <option value="1">1 - Never</option>
-                <option value="2">2 - Rarely</option>
-                <option value="3">3 - Sometimes</option>
-                <option value="4">4 - Often</option>
-                <option value="5">5 - Always</option>
-              </select>
-              <small id="q{{ i }}-help" class="help-text">Rate how frequently this applies to you</small>
-            {% endif %}
-          </div>
-        {% endfor %}
-        
-        <div class="actions">
-          <button type="submit" class="submit-btn">
-            🔍 Analyze My Stress Level
-          </button>
-          <button type="button" class="secondary-btn" onclick="resetForm()">
-            🔄 Clear All Answers
-          </button>
-        </div>
-      </form>
-      
-      <div class="footer">
-        <p>© 2025 Student Stress Assessment Tool</p>
-        <p><small>Created by Yash Kumar | Confidential & Secure</small></p>
-      </div>
     </div>
-  </div>
-  
-  <!-- Accessibility improvements -->
-  <div aria-live="polite" aria-atomic="true" class="sr-only" id="status-updates"></div>
+
+    <div class="wrapper">
+        <div class="card main-card">
+            <div class="header">
+                <div class="logo-container">
+                    <i class="fas fa-brain pulse"></i>
+                </div>
+                <h1>Student Stress Monitoring</h1>
+                <p class="subtitle">Professional Mental Health Screening Tool</p>
+                
+                <p class="description">
+                    This evidence-based assessment helps evaluate your stress levels through comprehensive analysis of various factors.
+                </p>
+
+                <!-- Enhanced Progress indicator -->
+                <div class="progress-container">
+                    <div class="progress-stats">
+                        <div class="progress-label">Completion Status</div>
+                        <div id="progress-text" class="progress-text">0/25 questions answered</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill">
+                            <div class="progress-glow"></div>
+                        </div>
+                    </div>
+                    <!-- Added Stress Meter -->
+                    <div class="stress-meter">
+                        <div class="meter-container">
+                            <div class="half-circle"></div>
+                            <div class="meter-center">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="stress-form" method="POST" action="/predict" onsubmit="return validateAndSubmit(event)">
+                <div class="questions-grid">
+                    {% for i in range(1, 26) %}
+                    <div class="question" data-question="{{ i }}">
+                        <div class="question-header">
+                            <span class="question-number">Q{{ i }}</span>
+                            <span class="question-text">{{ questions[i-1] }}</span>
+                        </div>
+                        
+                        <div class="input-group">
+                            {% if i == 1 %}
+                            <select name="q1" id="q1" required aria-describedby="q1-help" class="enhanced-select">
+                                <option value="">Select Gender</option>
+                                <option value="1">Male</option>
+                                <option value="2">Female</option>
+                                <option value="3">Other</option>
+                            </select>
+                            {% elif i == 2 %}
+                            <select name="q2" id="q2" required aria-describedby="q2-help" class="enhanced-select">
+                                <option value="">Select Age Range</option>
+                                <option value="1">Below 18</option>
+                                <option value="2">18–22</option>
+                                <option value="3">23–26</option>
+                                <option value="4">27–30</option>
+                                <option value="5">Above 30</option>
+                            </select>
+                            {% else %}
+                            <select name="q{{ i }}" id="q{{ i }}" required aria-describedby="q{{ i }}-help" class="enhanced-select">
+                                <option value="">Select Frequency</option>
+                                <option value="1">1 - Never</option>
+                                <option value="2">2 - Rarely</option>
+                                <option value="3">3 - Sometimes</option>
+                                <option value="4">4 - Often</option>
+                                <option value="5">5 - Always</option>
+                            </select>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-chart-bar"></i> Analyze Stress Level
+                    </button>
+                    <button type="button" class="secondary-btn" onclick="resetForm()">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </form>
+
+            <div class="footer">
+                <div class="footer-content">
+                    <div class="footer-info">
+                        <p>© 2025 Student Stress Monitoring Tool</p>
+                        <p>Created by Yash Kumar | Professional Mental Health Analysis Tool</p>
+                    </div>
+                    <div class="footer-badges">
+                        <span class="badge"><i class="fas fa-shield-alt"></i> GDPR Compliant</span>
+                        <span class="badge"><i class="fas fa-lock"></i> Data Protected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
